@@ -1,0 +1,9 @@
+celery==5.0.5
+Django==3.2.5
+djangorestframework==3.12.4
+# djangorestframework-jwt==1.11.0
+django-allauth==0.45.0
+django-celery-results==2.2.0
+djoser==2.1.0
+djangorestframework-simplejwt==4.7.2
+social-auth-app-django==4.0.0
