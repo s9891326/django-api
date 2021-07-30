@@ -5,6 +5,11 @@ from django.core.mail import send_mail
 
 
 @shared_task
+def add(x, y):
+    return x + y
+
+
+@shared_task
 def task_mail(subject: str, message: str, user_email: list):
     mail_sent = send_mail(
         subject=subject,

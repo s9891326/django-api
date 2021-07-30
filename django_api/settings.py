@@ -9,23 +9,42 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
+import environ
 import datetime
 import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# ================= #
+#  environ setting  #
+# ================= #
+ROOT_DIR = (
+    environ.Path(__file__) - 2
+)
+print(f"Root dir: {ROOT_DIR}")
+
+# reading .env file
+env = environ.Env()
+env.read_env(str(ROOT_DIR.path(".env")))
+
+# False if not in os.environ
+DEBUG = env('DEBUG')
+print(f"DEBUG: {DEBUG}")
+
+# Raises django's ImproperlyConfigured exception if SECRET_KEY not in os.environ
+SECRET_KEY = env('SECRET_KEY')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-u)l&i%n^6hr+0e7%j)lab%ao#pbcousb9t@il*8a&koc+r&6^!'
+# SECRET_KEY = 'django-insecure-u)l&i%n^6hr+0e7%j)lab%ao#pbcousb9t@il*8a&koc+r&6^!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
@@ -35,8 +54,8 @@ REST_FRAMEWORK = {
     # Django REST Framework 預設就是使用 JSON，所以不用設定。
     # 使用 session 登入。
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -47,20 +66,11 @@ REST_FRAMEWORK = {
     ]
 }
 
-# JWT
-JWT_AUTH = {
-    # how long the original token is valid for
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
-
-    # allow refreshing of tokens
-    'JWT_ALLOW_REFRESH': True,
-
-    # this is the maximum time AFTER the token was issued that
-    # it can be refreshed.  exprired tokens can't be refreshed.
-    # 'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
-}
 SIMPLE_JWT = {
-   'AUTH_HEADER_TYPES': ('JWT',),
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=1),
+    'ALGORITHM': 'HS256',
+    'JWT_ALLOW_REFRESH': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
 # Application definition
@@ -82,7 +92,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'django_celery_results',
-    # 'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -204,7 +213,7 @@ CELERY_RESULT_BACKEND = "django-db"
 # 最重要的設定，設定訊息broker,格式為：db://user:password@host:port/dbname
 # 如果redis安裝在本機，使用localhost
 # 如果docker部署的redis，使用redis://redis:6379
-CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
+CELERY_BROKER_URL = env("REDIS_URL")
 
 # celery內容等訊息的格式設定，預設json
 CELERY_ACCEPT_CONTENT = ['application/json', ]
@@ -228,3 +237,19 @@ EMAIL_HOST_USER = 'eddy15201@gmail.com'
 EMAIL_HOST_PASSWORD = 'lyvaknpnrtpuhphg'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+# ============ #
+# django-redis #
+# ============ #
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": env("REDIS_URL"),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+REDIS_TIMEOUT = 60 * 5  # five minutes
