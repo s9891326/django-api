@@ -3,12 +3,18 @@ import random
 from django.http import HttpResponse
 from django.core.cache import cache
 from rest_framework import permissions, status
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt import authentication
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from django_api.settings import REDIS_TIMEOUT, EMAIL_HOST_USER
+from user.serializers import SocialLoginSerializer
 from user.tasks import task_mail
+
+from utils.response import APIResponse
 
 
 # Create your views here.
@@ -89,3 +95,27 @@ class VerifyCode(APIView):
             return Response(data={"msg": "驗證成功"})
         else:
             return Response(data={"msg": "驗證碼錯誤"})
+
+
+# social Jwt token
+def get_tokens_for_user(user):
+    refresh = RefreshToken.for_user(user)
+    return {
+        "refresh": str(refresh),
+        "access": str(refresh.access_token),
+    }
+
+
+class GoogleLogin(TokenObtainPairView):
+    permission_classes = (AllowAny,)  # AllowAny for login
+    serializer_class = SocialLoginSerializer
+
+    def post(self, request, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.save()
+            # return Response(get_tokens_for_user(user))
+            return APIResponse(data_status=status.HTTP_200_OK, data_msg="success", results=get_tokens_for_user(user),
+                               http_status=200)
+        else:
+            raise ValueError('Not serializable')

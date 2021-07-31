@@ -13,4 +13,6 @@ urlpatterns = [
     path('forget_password/', views.ForgetPassword.as_view(), name="forget_password"),
     path('verify_code/', views.VerifyCode.as_view(), name="verify_code"),
 
+    # 第三方登入
+    path('token/obtain/', views.GoogleLogin.as_view(), name="obtain"),
 ]

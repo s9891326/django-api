@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #  environ setting  #
 # ================= #
 ROOT_DIR = (
-    environ.Path(__file__) - 2
+        environ.Path(__file__) - 2
 )
 print(f"Root dir: {ROOT_DIR}")
 
@@ -36,7 +36,6 @@ print(f"DEBUG: {DEBUG}")
 # Raises django's ImproperlyConfigured exception if SECRET_KEY not in os.environ
 SECRET_KEY = env('SECRET_KEY')
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
@@ -50,6 +49,7 @@ LOGOUT_REDIRECT_URL = '/'
 
 ALLOWED_HOSTS = []
 
+# Rest framework settings
 REST_FRAMEWORK = {
     # Django REST Framework 預設就是使用 JSON，所以不用設定。
     # 使用 session 登入。
@@ -92,9 +92,11 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'django_celery_results',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -146,6 +148,12 @@ SOCIALACCOUNT_PROVIDERS = {
 
 SITE_ID = 1
 
+SOCIAL_GOOGLE_CLIENT_ID = env("SOCIAL_GOOGLE_CLIENT_ID")
+
+# CORS header
+CORS_ORIGIN_WHITELIST = (
+     'http://localhost:63342',  # localhost:63342 != 127.0.0.1:63342
+)
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -156,7 +164,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -176,7 +183,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -190,7 +196,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
@@ -200,7 +205,6 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 
 # ================================= #
 # =====    celery setting    ====== #
@@ -226,7 +230,6 @@ CELERY_TIMEZONE = TIME_ZONE
 
 # 為任務設定超時時間，單位秒。超時即中止，執行下個任務。
 CELERY_TASK_TIME_LIMIT = 5
-
 
 # ======= #
 #  Email  #
