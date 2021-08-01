@@ -7,14 +7,16 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt import authentication
+from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from django_api.settings import REDIS_TIMEOUT, EMAIL_HOST_USER
-from user.serializers import SocialLoginSerializer
+from user.serializers import SocialLoginSerializer, CustomTokenObtainPairSerializer
 from user.tasks import task_mail
 
 from utils.response import APIResponse
+from utils.status_message import StatusMessage
 
 
 # Create your views here.
@@ -115,7 +117,32 @@ class GoogleLogin(TokenObtainPairView):
         if serializer.is_valid(raise_exception=True):
             user = serializer.save()
             # return Response(get_tokens_for_user(user))
-            return APIResponse(data_status=status.HTTP_200_OK, data_msg="success", results=get_tokens_for_user(user),
-                               http_status=200)
+            return APIResponse(
+                data_status=status.HTTP_200_OK,
+                data_msg=StatusMessage.HTTP_200_OK.value,
+                results=get_tokens_for_user(user),
+                http_status=status.HTTP_200_OK
+            )
         else:
             raise ValueError('Not serializable')
+
+
+# Custom Simple JWT token
+class CustomTokenObtainPairView(TokenObtainPairView):
+    permission_classes = (AllowAny,)
+    serializer_class = CustomTokenObtainPairSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
+
+        return APIResponse(
+            data_status=status.HTTP_200_OK,
+            data_msg=StatusMessage.HTTP_200_OK.value,
+            results=serializer.validated_data,
+            status=status.HTTP_200_OK
+        )

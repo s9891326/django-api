@@ -15,4 +15,7 @@ urlpatterns = [
 
     # 第三方登入
     path('token/obtain/', views.GoogleLogin.as_view(), name="obtain"),
+
+    # Custom JWT token
+    path('token/', views.CustomTokenObtainPairView.as_view(), name="token"),
 ]

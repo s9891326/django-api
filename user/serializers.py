@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from google.oauth2 import id_token
 from google.auth.transport import requests
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from django_api.settings import SOCIAL_GOOGLE_CLIENT_ID
 from user.models import SocialAccount
@@ -50,3 +51,14 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["username", "email", "first_name", "last_name"]
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super(CustomTokenObtainPairSerializer, cls).get_token(user)
+
+        # Add custom claims
+        token["username"] = user.username
+        token["email"] = user.email
+        return token
