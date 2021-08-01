@@ -26,9 +26,9 @@ urlpatterns = [
     # path('api-token-refresh/', refresh_jwt_token),  # 能重新獲取新的token
     # path('api-token-verify/', verify_jwt_token),  # 測試輸入token是否正確
     # djoser
-    path('auth/', include('djoser.urls')),
-    path('auth/', include('djoser.urls.authtoken')),
-    path('auth/', include('djoser.urls.jwt')),
+    # path('auth/', include('djoser.urls')),
+    # path('auth/', include('djoser.urls.authtoken')),
+    # path('auth/', include('djoser.urls.jwt')),
     # google login
     path('accounts/', include('allauth.urls')),  # http://127.0.0.1:8000/accounts/google/login/
     path('logout', LogoutView.as_view()),

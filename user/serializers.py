@@ -47,12 +47,6 @@ class SocialLoginSerializer(serializers.Serializer):
             raise ValueError("Incorrect Credentials")
 
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["username", "email", "first_name", "last_name"]
-
-
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
@@ -62,3 +56,13 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token["username"] = user.username
         token["email"] = user.email
         return token
+
+
+class RegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "username", "email"]
+
+    def create(self, validated_data):
+        auth_user = User.objects.create_user(**validated_data)
+        return auth_user

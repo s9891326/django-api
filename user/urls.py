@@ -17,5 +17,7 @@ urlpatterns = [
     path('token/obtain/', views.GoogleLogin.as_view(), name="obtain"),
 
     # Custom JWT token
-    path('token/', views.CustomTokenObtainPairView.as_view(), name="token"),
+    path('login/', views.CustomTokenObtainPairView.as_view(), name="token_login"),
+    path('refresh/', views.CustomTokenRefreshView.as_view(), name="token_refresh"),
+    path('register/', views.AuthRegisterView.as_view(), name="register"),
 ]
