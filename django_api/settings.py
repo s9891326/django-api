@@ -91,6 +91,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
     'django_celery_results',
     'corsheaders',
 ]
@@ -143,16 +144,26 @@ SOCIALACCOUNT_PROVIDERS = {
         'AUTH_PARAMS': {
             'access_type': 'online',
         }
-    }
+    },
+    'facebook': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    },
 }
 
 SITE_ID = 1
 
 SOCIAL_GOOGLE_CLIENT_ID = env("SOCIAL_GOOGLE_CLIENT_ID")
+SOCIAL_FACEBOOK_CLIENT_ID = env("SOCIAL_GOOGLE_CLIENT_ID")
 
 # CORS header
 CORS_ORIGIN_WHITELIST = (
-     'http://localhost:63342',  # localhost:63342 != 127.0.0.1:63342
+    'http://localhost:63342',  # localhost:63342 != 127.0.0.1:63342
 )
 
 # Database
@@ -163,6 +174,15 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'django',
+    #     'USER': 'eddy',
+    #     'PASSWORD': 'eddy',
+    #     'HOST': 'localhost',
+    #     # POST官方推薦的是字串。
+    #     'POST': '3306',
+    # }
 }
 
 # Password validation

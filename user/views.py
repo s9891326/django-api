@@ -11,6 +11,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from django_api.settings import REDIS_TIMEOUT, EMAIL_HOST_USER
+from user.models import TestModel
 from user.serializers import SocialLoginSerializer, CustomTokenObtainPairSerializer, RegisterSerializer
 from user.tasks import task_mail
 
@@ -214,3 +215,10 @@ class AuthRegisterView(APIView):
                 data_msg=e.detail,
                 http_status=e.status_code
             )
+
+
+def test_signals(request):
+    print("in test signals")
+    TestModel.objects.create(test_name="123")
+    print("saved the test model")
+    return HttpResponse("test_signals")

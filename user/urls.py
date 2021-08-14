@@ -20,4 +20,7 @@ urlpatterns = [
     path('login/', views.CustomTokenObtainPairView.as_view(), name="token_login"),
     path('refresh/', views.CustomTokenRefreshView.as_view(), name="token_refresh"),
     path('register/', views.AuthRegisterView.as_view(), name="register"),
+
+    # Signal test
+    path('test_signals/', views.test_signals, name="test_signal")
 ]
