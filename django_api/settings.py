@@ -55,7 +55,7 @@ REST_FRAMEWORK = {
     # 使用 session 登入。
     'DEFAULT_AUTHENTICATION_CLASSES': [
         # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        # 'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -63,7 +63,9 @@ REST_FRAMEWORK = {
     # 必須登入才能使用。
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
-    ]
+    ],
+    'DEFAULT_SCHEMA_CLASS': "rest_framework.schemas.coreapi.AutoSchema",
+
 }
 
 SIMPLE_JWT = {
@@ -77,6 +79,7 @@ SIMPLE_JWT = {
 
 INSTALLED_APPS = [
     'user.apps.UserConfig',
+    'stores.apps.StoresConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
