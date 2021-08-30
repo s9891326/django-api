@@ -26,8 +26,19 @@ ROOT_DIR = (
 print(f"Root dir: {ROOT_DIR}")
 
 # reading .env file
-env = environ.Env()
-env.read_env(str(ROOT_DIR.path(".env")))
+# env = environ.Env()
+# env.read_env(str(ROOT_DIR.path(".env")))
+import os
+from django.core.exceptions import ImproperlyConfigured
+
+
+def env(key):
+    try:
+        return os.environ[key]
+    except KeyError:
+        raise ImproperlyConfigured(
+            'Environment variable {key} required.'.format(key=key)
+        )
 
 # False if not in os.environ
 DEBUG = env('DEBUG')
@@ -47,7 +58,7 @@ SECRET_KEY = env('SECRET_KEY')
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Rest framework settings
 REST_FRAMEWORK = {

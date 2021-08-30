@@ -1,3 +1,13 @@
+## Heroku部屬
+- [參考](https://github.com/s9891326/django-tutorial-for-programmers-uranusjr/blob/1.8/24-deploy-to-heroku.md)
+- heroku config:set DISABLE_COLLECTSTATIC=1
+
+## 重新上板步驟
+- `git add -u`(把更新的東西都加進來) 
+- `git commit -m "message"`
+- `heroku login`: 會跳出一個UI介面讓你登入
+- `git push heroku master`
+- `heroku open`
 
 ## JWT Token
 - 為登入驗證機制。保存期限為1天，提供token刷新功能。
