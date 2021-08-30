@@ -14,6 +14,5 @@ class APIResponse(Response):
             data['results'] = results
 
         data.update(kwargs)
-        print(headers)
         super().__init__(data=data, status=http_status, headers=headers,
                          exception=exception)

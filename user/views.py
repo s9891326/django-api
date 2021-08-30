@@ -8,13 +8,15 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt import authentication
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from django_api.settings import REDIS_TIMEOUT, EMAIL_HOST_USER
-from user.serializers import SocialLoginSerializer
+from user.models import TestModel
+from user.serializers import SocialLoginSerializer, CustomTokenObtainPairSerializer, RegisterSerializer
 from user.tasks import task_mail
 
 from utils.response import APIResponse
+from utils.status_message import StatusMessage
 
 
 # Create your views here.
@@ -53,28 +55,40 @@ class ForgetPassword(APIView):
         :param request:
         :return:
         """
-        # get parameter
-        email = request.data.get("email")
-        random_code = random.randint(100000, 999999)
+        try:
+            # get parameter
+            email = request.data.get("email")
+            random_code = random.randint(100000, 999999)
 
-        # celery send email
-        result = task_mail.delay(
-            subject=self.subject,
-            message=self.message.format(time=REDIS_TIMEOUT / 60, code=random_code),
-            user_email=EMAIL_HOST_USER
-        )
-        print(result.task_id + ":" + result.status)
+            # celery send email
+            result = task_mail.delay(
+                subject=self.subject,
+                message=self.message.format(time=REDIS_TIMEOUT / 60, code=random_code),
+                user_email=EMAIL_HOST_USER
+            )
+            print(result.task_id + ":" + result.status)
 
-        # set redis
-        cache.set(email, random_code, timeout=REDIS_TIMEOUT)
-        return Response({"code": 200, "msg": "email傳送成功"})
+            # set redis
+            cache.set(email, random_code, timeout=REDIS_TIMEOUT)
+            # return Response({"code": 200, "msg": "email傳送成功"})
+            return APIResponse(
+                data_status=status.HTTP_200_OK,
+                data_msg=StatusMessage.HTTP_200_OK.value,
+                http_status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            print(e)
+            return APIResponse(
+                data_status=status.HTTP_200_OK,
+                data_msg=e,
+                http_status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class VerifyCode(APIView):
     """
     Verify code with email in the redis. Return True or False represent verify whether success
     """
-
     def post(self, request):
         """
         Verify code
@@ -89,13 +103,31 @@ class VerifyCode(APIView):
         cache_code = cache.get(email)
 
         if not cache_code:
-            return Response(data={"msg": "驗證時間過期"})
+            # return Response(data={"msg": "驗證時間過期"})
+            return APIResponse(
+                data_status=status.HTTP_200_OK,
+                data_msg=StatusMessage.HTTP_400_BAD_VERIFY_TIME.value,
+                http_status=status.HTTP_400_BAD_REQUEST
+            )
         elif random_code == cache_code:
             cache.delete(email)
-            return Response(data={"msg": "驗證成功"})
+            # return Response(data={"msg": "驗證成功"})
+            return APIResponse(
+                data_status=status.HTTP_200_OK,
+                data_msg=StatusMessage.HTTP_200_OK.value,
+                http_status=status.HTTP_200_OK
+            )
         else:
-            return Response(data={"msg": "驗證碼錯誤"})
+            # return Response(data={"msg": "驗證碼錯誤"})
+            return APIResponse(
+                data_status=status.HTTP_200_OK,
+                data_msg=StatusMessage.HTTP_400_BAD_VERIFY_CODE.value,
+                http_status=status.HTTP_400_BAD_REQUEST
+            )
 
+    # todo: 當Authorization錯誤時，客製response
+    # def dispatch(self, request, *args, **kwargs):
+    #     pass
 
 # social Jwt token
 def get_tokens_for_user(user):
@@ -115,7 +147,78 @@ class GoogleLogin(TokenObtainPairView):
         if serializer.is_valid(raise_exception=True):
             user = serializer.save()
             # return Response(get_tokens_for_user(user))
-            return APIResponse(data_status=status.HTTP_200_OK, data_msg="success", results=get_tokens_for_user(user),
-                               http_status=200)
+            return APIResponse(
+                data_status=status.HTTP_200_OK,
+                data_msg=StatusMessage.HTTP_200_OK.value,
+                results=get_tokens_for_user(user),
+                http_status=status.HTTP_200_OK
+            )
         else:
-            raise ValueError('Not serializable')
+            # raise ValueError('Not serializable')
+            return APIResponse(
+                data_status=status.HTTP_400_BAD_REQUEST,
+                data_msg=StatusMessage.HTTP_400_BAD_REQUEST_SERIALIZABLE.value,
+                http_status=status.HTTP_400_BAD_REQUEST
+            )
+
+
+# Custom Simple JWT token
+def custom_token_post(serializer):
+    try:
+        serializer.is_valid(raise_exception=True)
+        return APIResponse(
+            data_status=status.HTTP_200_OK,
+            data_msg=StatusMessage.HTTP_200_OK.value,
+            results=serializer.validated_data,
+            http_status=status.HTTP_200_OK
+        )
+    except Exception as e:
+        return APIResponse(
+            data_status=e.status_code,
+            data_msg=e.detail,
+            http_status=e.status_code
+        )
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    permission_classes = (AllowAny,)
+    serializer_class = CustomTokenObtainPairSerializer
+
+    def post(self, request, *args, **kwargs):
+        return custom_token_post(self.get_serializer(data=request.data))
+
+
+class CustomTokenRefreshView(TokenRefreshView):
+    def post(self, request, *args, **kwargs):
+        return custom_token_post(self.get_serializer(data=request.data))
+
+
+class AuthRegisterView(APIView):
+    permission_classes = (AllowAny,)
+    serializer_class = RegisterSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+
+        try:
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return APIResponse(
+                data_status=status.HTTP_201_CREATED,
+                data_msg=StatusMessage.HTTP_201_CREATED_REGISTER.value,
+                results=serializer.validated_data,
+                http_status=status.HTTP_201_CREATED
+            )
+        except Exception as e:
+            return APIResponse(
+                data_status=e.status_code,
+                data_msg=e.detail,
+                http_status=e.status_code
+            )
+
+
+def test_signals(request):
+    print("in test signals")
+    TestModel.objects.create(test_name="123")
+    print("saved the test model")
+    return HttpResponse("test_signals")

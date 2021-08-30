@@ -8,3 +8,6 @@ class SocialAccount(models.Model):
     user = models.ForeignKey(
         User, related_name='social', on_delete=models.CASCADE)
 
+
+class TestModel(models.Model):
+    test_name = models.CharField(max_length=100)
