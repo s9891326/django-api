@@ -31,6 +31,12 @@
 
 ## API 說明文件
 - [coreapi](https://blog.csdn.net/weixin_42289273/article/details/110273877)
+- HTTP Method
+> - POST: 新增(/user)
+> - GET：讀取全部(/users)
+> - GET：讀取部分(/user/1)
+> - PUT：修改（修改整份文件）(/user/1)
+> - DELETE：刪除(/user/1)
 
 ## 欄位定義
 ### 店家
@@ -102,3 +108,6 @@
 1. 安装cryptography报错：Failed building wheel for cryptography
 > - 根據套件安裝錯誤提示先更新pip(`pip install -U pip`)，但無法順利更新。
 > - 改用`easy_install -U pip`來進行更新，再重新安裝djoser(`pip install djoser`)
+2. 理解Django aggregate()、annotate()的運用方式 [Ref](https://docs.djangoproject.com/zh-hans/3.2/topics/db/aggregation/)
+> - 兩者之間的差異: aggregate()是終端子句、annotate()不是終端子句。
+> - annotate()子句的輸出是QuerySet。這個QuerySet可以被其他QuerySet進行操作和修改(filter()、order_by())

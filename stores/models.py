@@ -26,24 +26,27 @@ class Store(models.Model):
         return self.name
 
 
-# class Menu(models.Model):
-#     store = models.ForeignKey('Store', related_name='menu_items', on_delete=models.CASCADE)
-#     name = models.CharField(max_length=20)
-#     price = models.IntegerField()
-#
-#     def __str__(self):
-#         return self.name
+class Menu(models.Model):
+    store = models.ForeignKey('Store', related_name='menu_items', on_delete=models.CASCADE)
+    name = models.CharField(max_length=20)
+    price = models.IntegerField()
+
+    def __str__(self):
+        return self.name
 
 
-# class Comment(models.Model):
-#     class CommentScore(models.TextChoices):
-#         first = 1,  _('一顆星')
-#         two = 2, _('二顆星')
-#         three = 3, _('三顆星')
-#         four = 4, _('四顆星')
-#         five = 5, _('五顆星')
-#
-#     store = models.ForeignKey('Store', related_name='comment_items', on_delete=models.CASCADE)
-#     score = models.IntegerField(choices=CommentScore.choices)
-#     notes = models.TextField(blank=True, default="")
-#     create_by = models.ForeignKey(User, on_delete=models.CASCADE)
+class Comment(models.Model):
+    class CommentScore(models.IntegerChoices):
+        first = 1,  _('一顆星')
+        two = 2, _('二顆星')
+        three = 3, _('三顆星')
+        four = 4, _('四顆星')
+        five = 5, _('五顆星')
+
+    store = models.ForeignKey('Store', related_name='comment_items', on_delete=models.CASCADE)
+    score = models.IntegerField(default=CommentScore.three, choices=CommentScore.choices)
+    notes = models.TextField(blank=True, default="")
+    create_by = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.store.name}_{self.create_by.username}"
