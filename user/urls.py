@@ -6,6 +6,7 @@ from . import views
 # REST API
 # v1 = routers.DefaultRouter()
 # v1.register("user", views.CurrentUserViewSet)
+app_name = "user"
 
 urlpatterns = [
     # path('', include(v1.urls)),
