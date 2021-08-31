@@ -36,6 +36,11 @@
 - [Google developer GCP](https://console.cloud.google.com/apis/credentials/oauthclient/122455133186-drprmpo7inpbpdp8j9fdnodn46hqslct.apps.googleusercontent.com?project=solar-haven-320806)
 - [Google Sign-in文件](https://developers.google.com/identity/sign-in/web/sign-in)
 
+## GIT
+- 刪除已存在的檔案
+    - $ git rm --cached <file>         # 單一檔案
+    - $ git rm -r --cached <folder>    # 指定資料夾下的所有檔案
+
 ## Celery send email
 - [Celery](https://tw511.com/a/01/33541.html)
 
