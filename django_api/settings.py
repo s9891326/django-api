@@ -45,7 +45,8 @@ DEBUG = env('DEBUG')
 print(f"DEBUG: {DEBUG}")
 
 # Raises django's ImproperlyConfigured exception if SECRET_KEY not in os.environ
-SECRET_KEY = env('SECRET_KEY')
+# SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = "django-insecure-ul&i%n^6hr+0e7%jlab%ao#pbcousb9t@il*8a&koc+r&6^!"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
