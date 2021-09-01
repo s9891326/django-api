@@ -20,10 +20,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ================= #
 #  environ setting  #
 # ================= #
-ROOT_DIR = (
-        environ.Path(__file__) - 2
-)
-print(f"Root dir: {ROOT_DIR}")
+# ROOT_DIR = (
+#         environ.Path(__file__) - 2
+# )
+# print(f"Root dir: {ROOT_DIR}")
 
 # reading .env file
 # env = environ.Env()
@@ -187,20 +187,24 @@ CORS_ORIGIN_WHITELIST = (
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+#     # 'default': {
+#     #     'ENGINE': 'django.db.backends.mysql',
+#     #     'NAME': 'django',
+#     #     'USER': 'eddy',
+#     #     'PASSWORD': 'eddy',
+#     #     'HOST': 'localhost',
+#     #     # POST官方推薦的是字串。
+#     #     'POST': '3306',
+#     # }
+# }
+import dj_database_url
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'django',
-    #     'USER': 'eddy',
-    #     'PASSWORD': 'eddy',
-    #     'HOST': 'localhost',
-    #     # POST官方推薦的是字串。
-    #     'POST': '3306',
-    # }
+    'default': dj_database_url.config()
 }
 
 # Password validation
@@ -238,6 +242,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
