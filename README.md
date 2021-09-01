@@ -1,6 +1,8 @@
 ## Heroku部屬
 - [參考](https://github.com/s9891326/django-tutorial-for-programmers-uranusjr/blob/1.8/24-deploy-to-heroku.md)
+- heroku git:remote -a <your_app_name>
 - heroku config:set DISABLE_COLLECTSTATIC=1
+- heroku run python manage.py showmigrations  -> 用來確認每個app是否都有正常
 
 ## 重新上板步驟
 - `git add -u`(把更新的東西都加進來) 

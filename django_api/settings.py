@@ -59,6 +59,9 @@ SECRET_KEY = "django-insecure-ul&i%n^6hr+0e7%jlab%ao#pbcousb9t@il*8a&koc+r&6^!"
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
+# 尊重 HTTPS 連線中的 "X-Forwarded-Proto" header。
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 ALLOWED_HOSTS = ['*']
 
 # Rest framework settings
