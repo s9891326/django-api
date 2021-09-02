@@ -10,7 +10,7 @@ from rest_framework_simplejwt import authentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from django_api.settings import REDIS_TIMEOUT, EMAIL_HOST_USER
+from django_api.settings.base import REDIS_TIMEOUT, EMAIL_HOST_USER
 from user.models import TestModel
 from user.serializers import SocialLoginSerializer, CustomTokenObtainPairSerializer, RegisterSerializer
 from user.tasks import task_mail

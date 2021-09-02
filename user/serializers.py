@@ -4,8 +4,7 @@ from google.oauth2 import id_token
 from google.auth.transport import requests
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from django_api.settings import SOCIAL_GOOGLE_CLIENT_ID
-from user.models import SocialAccount
+from django_api.settings.base import SOCIAL_GOOGLE_CLIENT_ID
 
 
 class SocialLoginSerializer(serializers.Serializer):
