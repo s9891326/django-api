@@ -17,13 +17,14 @@ from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+print(f"BASE_DIR: {BASE_DIR}")
 
 # ================= #
 #  environ setting  #
 # ================= #
-ROOT_DIR = (
-        environ.Path(__file__) - 2
-)
+# ROOT_DIR = (
+#         environ.Path(__file__) - 2
+# )
 # print(f"Root dir: {ROOT_DIR}")
 
 # reading .env file
