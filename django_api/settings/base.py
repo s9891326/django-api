@@ -13,28 +13,37 @@ import environ
 import datetime
 import os
 from pathlib import Path
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # ================= #
 #  environ setting  #
 # ================= #
-ROOT_DIR = (
-        environ.Path(__file__) - 2
-)
-print(f"Root dir: {ROOT_DIR}")
+# ROOT_DIR = (
+#         environ.Path(__file__) - 2
+# )
+# print(f"Root dir: {ROOT_DIR}")
 
 # reading .env file
-env = environ.Env()
-env.read_env(str(ROOT_DIR.path(".env")))
+# env = environ.Env()
+# env.read_env(str(ROOT_DIR.path(".env")))
+def env(key):
+    try:
+        return os.environ[key]
+    except KeyError:
+        raise ImproperlyConfigured(
+            'Environment variable {key} required.'.format(key=key)
+        )
 
 # False if not in os.environ
-DEBUG = env('DEBUG')
-print(f"DEBUG: {DEBUG}")
+# DEBUG = env('DEBUG')
+# print(f"DEBUG: {DEBUG}")
 
 # Raises django's ImproperlyConfigured exception if SECRET_KEY not in os.environ
-SECRET_KEY = env('SECRET_KEY')
+# SECRET_KEY = env('SECRET_KEY')
+# SECRET_KEY = "django-insecure-ul&i%n^6hr+0e7%jlab%ao#pbcousb9t@il*8a&koc+r&6^!"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -95,7 +104,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
-    'django_celery_results',
+    # 'django_celery_results',
     'corsheaders',
 ]
 
@@ -161,8 +170,9 @@ SOCIALACCOUNT_PROVIDERS = {
 
 SITE_ID = 1
 
-SOCIAL_GOOGLE_CLIENT_ID = env("SOCIAL_GOOGLE_CLIENT_ID")
-SOCIAL_FACEBOOK_CLIENT_ID = env("SOCIAL_GOOGLE_CLIENT_ID")
+# SOCIAL_GOOGLE_CLIENT_ID = env("SOCIAL_GOOGLE_CLIENT_ID")
+SOCIAL_GOOGLE_CLIENT_ID = "122455133186-drprmpo7inpbpdp8j9fdnodn46hqslct.apps.googleusercontent.com"
+# SOCIAL_FACEBOOK_CLIENT_ID = env("SOCIAL_GOOGLE_CLIENT_ID")
 
 # CORS header
 CORS_ORIGIN_WHITELIST = (
@@ -172,21 +182,21 @@ CORS_ORIGIN_WHITELIST = (
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'django',
-    #     'USER': 'eddy',
-    #     'PASSWORD': 'eddy',
-    #     'HOST': 'localhost',
-    #     # POST官方推薦的是字串。
-    #     'POST': '3306',
-    # }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+#     # 'default': {
+#     #     'ENGINE': 'django.db.backends.mysql',
+#     #     'NAME': 'django',
+#     #     'USER': 'eddy',
+#     #     'PASSWORD': 'eddy',
+#     #     'HOST': 'localhost',
+#     #     # POST官方推薦的是字串。
+#     #     'POST': '3306',
+#     # }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -221,7 +231,6 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
-
 STATIC_URL = '/static/'
 
 # Default primary key field type
@@ -236,46 +245,42 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # 為django_celery_results儲存Celery任務執行結果設定後臺
 # 格式為：db+scheme://user:password@host:port/dbname
 # 支援資料庫django-db和快取django-cache儲存任務狀態及結果
-CELERY_RESULT_BACKEND = "django-db"
-# 最重要的設定，設定訊息broker,格式為：db://user:password@host:port/dbname
-# 如果redis安裝在本機，使用localhost
-# 如果docker部署的redis，使用redis://redis:6379
-CELERY_BROKER_URL = env("REDIS_URL")
+# CELERY_RESULT_BACKEND = "django-db"
 
 # celery內容等訊息的格式設定，預設json
-CELERY_ACCEPT_CONTENT = ['application/json', ]
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
+# CELERY_ACCEPT_CONTENT = ['application/json', ]
+# CELERY_TASK_SERIALIZER = 'json'
+# CELERY_RESULT_SERIALIZER = 'json'
 
 # celery時區設定，建議與Django settings中TIME_ZONE同樣時區，防止時差
 # Django設定時區需同時設定USE_TZ=True和TIME_ZONE = 'Asia/Shanghai'
-CELERY_TIMEZONE = TIME_ZONE
+# CELERY_TIMEZONE = TIME_ZONE
 
 # 為任務設定超時時間，單位秒。超時即中止，執行下個任務。
-CELERY_TASK_TIME_LIMIT = 5
+# CELERY_TASK_TIME_LIMIT = 5
 
 # ======= #
 #  Email  #
 # ======= #
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'eddy15201@gmail.com'
-EMAIL_HOST_PASSWORD = 'lyvaknpnrtpuhphg'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+# EMAIL_HOST_PASSWORD = 'lyvaknpnrtpuhphg'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
 
 # ============ #
 # django-redis #
 # ============ #
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": env("REDIS_URL"),
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    }
-}
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-SESSION_CACHE_ALIAS = "default"
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": env("REDIS_URL"),
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#         }
+#     }
+# }
+# SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+# SESSION_CACHE_ALIAS = "default"
 REDIS_TIMEOUT = 60 * 5  # five minutes

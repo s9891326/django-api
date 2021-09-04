@@ -1,3 +1,17 @@
+## Heroku部屬
+- [參考](https://github.com/s9891326/django-tutorial-for-programmers-uranusjr/blob/1.8/24-deploy-to-heroku.md)
+- heroku git:remote -a <your_app_name>
+- heroku config:set DISABLE_COLLECTSTATIC=1
+- heroku run python manage.py migrate
+- heroku run python manage.py createsuperuser
+- heroku run python manage.py showmigrations  -> 用來確認每個app是否都有正常
+
+## 重新上板步驟
+- `git add -u`(把更新的東西都加進來) 
+- `git commit -m "message"`
+- `heroku login`: 會跳出一個UI介面讓你登入
+- `git push heroku master`
+- `heroku open`
 
 ## JWT Token
 - 為登入驗證機制。保存期限為1天，提供token刷新功能。
@@ -25,6 +39,11 @@
 - [FB developer](https://developers.facebook.com/apps/1001993363887699/settings/basic/)
 - [Google developer GCP](https://console.cloud.google.com/apis/credentials/oauthclient/122455133186-drprmpo7inpbpdp8j9fdnodn46hqslct.apps.googleusercontent.com?project=solar-haven-320806)
 - [Google Sign-in文件](https://developers.google.com/identity/sign-in/web/sign-in)
+
+## GIT
+- 刪除已存在的檔案
+    - $ git rm --cached <file>         # 單一檔案
+    - $ git rm -r --cached <folder>    # 指定資料夾下的所有檔案
 
 ## Celery send email
 - [Celery](https://tw511.com/a/01/33541.html)
