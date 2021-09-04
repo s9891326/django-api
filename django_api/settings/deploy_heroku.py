@@ -2,7 +2,7 @@ from .base import *
 import dj_database_url
 
 # 把 debug 模式關掉。
-DEBUG = False
+DEBUG = env('DEBUG')
 
 # 設定 secret key。
 SECRET_KEY = env('DJANGO_SECRET_KEY')
