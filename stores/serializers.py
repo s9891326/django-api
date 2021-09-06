@@ -29,7 +29,7 @@ class StoreSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
     menu_items = MenuSerializer(many=True)
     comment_items = CommentSerializer(many=True)
-    url = serializers.HyperlinkedIdentityField(view_name="store-detail")
+    url = serializers.HyperlinkedIdentityField(view_name="stores:store-detail", read_only=True)
     create_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
     create_by = serializers.StringRelatedField()
 
@@ -68,3 +68,12 @@ class StoreSerializer(serializers.HyperlinkedModelSerializer):
         username = self.context["request"].user
         return User.objects.filter(username=username).first()
 
+
+# class QueryStoreScoreRankSerializer(serializers.Serializer):
+#     # rank = serializers.IntegerField()
+#     email = serializers.EmailField()
+#     message = serializers.CharField()
+#
+#     class Meta:
+#         model = Store
+#         fields = "__all__"
