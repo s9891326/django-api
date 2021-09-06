@@ -1,15 +1,19 @@
-from django.shortcuts import render
-from requests import Response
+import coreapi
+from django.db.models import Avg
 from rest_framework import permissions, viewsets, status
+from rest_framework.permissions import AllowAny
+from rest_framework.schemas import AutoSchema
 from rest_framework.views import APIView
 
 from stores.models import Store, Menu, Comment
+from stores.schema import QueryStoreScoreRankSchema, QueryStoreCreateTimeRankSchema
 from stores.serializers import StoreSerializer, MenuSerializer, CommentSerializer
+from utils.help_utils import get_date_time_str
+from utils.response import APIResponse, jsonify
+from utils.status_message import StatusMessage
 
 
 # Create your views here.
-
-
 class StoreViewSet(viewsets.ModelViewSet):
     """
     list:
@@ -68,3 +72,65 @@ class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+class QueryStoreScoreRank(APIView):
+    """
+    Query the ranking of store comment average score.
+    """
+    schema = QueryStoreScoreRankSchema()
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        rank = int(request.GET.get(QueryStoreScoreRankSchema.RANK, 5))
+
+        score_ranks = Store.objects.all().annotate(
+            score_rank=Avg("comment_items__score")
+        ).order_by("-score_rank")[:rank]
+
+        result = []
+        for score in score_ranks:
+            result.append(dict(
+                name=score.name,
+                store_type=score.store_type,
+                avg_score=score.score_rank
+            ))
+
+        return APIResponse(
+            data_status=status.HTTP_200_OK,
+            data_msg=StatusMessage.HTTP_200_OK.value,
+            results=result,
+            http_status=status.HTTP_200_OK
+        )
+
+
+class QueryStoreCreateTimeRank(APIView):
+    """
+    Query the ranking of store create time.
+    """
+    schema = QueryStoreCreateTimeRankSchema()
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        rank = int(request.GET.get(QueryStoreCreateTimeRankSchema.RANK, 5))
+
+        create_at_ranks = Store.objects.all().order_by("-create_at")[:rank]
+
+        result = []
+        for rank in create_at_ranks:
+            result.append(dict(
+                name=rank.name,
+                store_type=rank.store_type,
+                phone_number=rank.phone_number,
+                local=rank.local,
+                notes=rank.notes,
+                create_at=get_date_time_str(rank.create_at),
+            ))
+
+        return jsonify(
+            data_status=status.HTTP_200_OK,
+            data_msg=StatusMessage.HTTP_200_OK.value,
+            result=result,
+            http_status=status.HTTP_200_OK
+        )
+

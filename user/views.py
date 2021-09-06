@@ -89,7 +89,8 @@ class VerifyCode(APIView):
     """
     Verify code with email in the redis. Return True or False represent verify whether success
     """
-    def post(self, request):
+    @classmethod
+    def post(cls, request):
         """
         Verify code
         :param request:
@@ -103,7 +104,6 @@ class VerifyCode(APIView):
         cache_code = cache.get(email)
 
         if not cache_code:
-            # return Response(data={"msg": "驗證時間過期"})
             return APIResponse(
                 data_status=status.HTTP_200_OK,
                 data_msg=StatusMessage.HTTP_400_BAD_VERIFY_TIME.value,
@@ -111,14 +111,12 @@ class VerifyCode(APIView):
             )
         elif random_code == cache_code:
             cache.delete(email)
-            # return Response(data={"msg": "驗證成功"})
             return APIResponse(
                 data_status=status.HTTP_200_OK,
                 data_msg=StatusMessage.HTTP_200_OK.value,
                 http_status=status.HTTP_200_OK
             )
         else:
-            # return Response(data={"msg": "驗證碼錯誤"})
             return APIResponse(
                 data_status=status.HTTP_200_OK,
                 data_msg=StatusMessage.HTTP_400_BAD_VERIFY_CODE.value,
@@ -146,7 +144,6 @@ class GoogleLogin(TokenObtainPairView):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             user = serializer.save()
-            # return Response(get_tokens_for_user(user))
             return APIResponse(
                 data_status=status.HTTP_200_OK,
                 data_msg=StatusMessage.HTTP_200_OK.value,
@@ -154,7 +151,6 @@ class GoogleLogin(TokenObtainPairView):
                 http_status=status.HTTP_200_OK
             )
         else:
-            # raise ValueError('Not serializable')
             return APIResponse(
                 data_status=status.HTTP_400_BAD_REQUEST,
                 data_msg=StatusMessage.HTTP_400_BAD_REQUEST_SERIALIZABLE.value,

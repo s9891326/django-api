@@ -1,3 +1,6 @@
+import json
+
+from django.http import HttpResponse
 from rest_framework.response import Response
 
 
@@ -15,4 +18,16 @@ class APIResponse(Response):
 
         data.update(kwargs)
         super().__init__(data=data, status=http_status, headers=headers,
-                         exception=exception)
+                         exception=exception, content_type='application/json')
+
+
+def jsonify(*args, **kwargs):
+    encoded_data = json.dumps(
+        dict(*args, **kwargs),
+        ensure_ascii=False,
+    )
+
+    return HttpResponse(
+        encoded_data,
+        content_type="application/json"
+    )

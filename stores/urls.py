@@ -13,5 +13,7 @@ router.register("comment", views.CommentViewSet, basename="comment_api")
 
 urlpatterns = [
     path('api/', include(router.urls)),
+    path('query_store_score_rank/', views.QueryStoreScoreRank.as_view(), name="query_store_score_rank"),
+    path('query_store_create_time_rank/', views.QueryStoreCreateTimeRank.as_view(), name="query_store_create_time_rank"),
 ]
 
