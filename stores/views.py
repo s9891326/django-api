@@ -92,7 +92,7 @@ class QueryStoreScoreRank(APIView):
         for score in score_ranks:
             result.append(dict(
                 name=score.name,
-                store_type=score.store_type,
+                type=score.type,
                 avg_score=score.score_rank
             ))
 
@@ -109,7 +109,7 @@ class QueryStoreCreateTimeRank(APIView):
     Query the ranking of store create time.
     """
     schema = QueryStoreCreateTimeRankSchema()
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
         rank = int(request.GET.get(QueryStoreCreateTimeRankSchema.RANK, 5))
@@ -120,10 +120,10 @@ class QueryStoreCreateTimeRank(APIView):
         for rank in create_at_ranks:
             result.append(dict(
                 name=rank.name,
-                store_type=rank.store_type,
+                type=rank.type,
                 phone_number=rank.phone_number,
                 local=rank.local,
-                notes=rank.notes,
+                summary=rank.summary,
                 create_at=get_date_time_str(rank.create_at),
             ))
 

@@ -13,12 +13,13 @@ class Store(models.Model):
         Taiwan = 'Taiwan', _('台式料理')
 
     name = models.CharField(max_length=30)
-    store_type = models.CharField(max_length=7, choices=StoreType.choices)
+    type = models.CharField(max_length=7, choices=StoreType.choices)
     phone_number_regex = RegexValidator(regex=r"^\d{4}\-\d{3}\-\d{3}$",
                                         message="Phone number must be entered in the format: '0912-345-678'")
     phone_number = models.CharField(validators=[phone_number_regex], max_length=12)
-    notes = models.TextField(blank=True, default="")
+    description = models.TextField(blank=True, default="")
     local = models.CharField(max_length=30)
+    picture = models.ImageField(upload_to='stores', default="")
     create_at = models.DateTimeField(auto_now_add=True)
     create_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -27,9 +28,20 @@ class Store(models.Model):
 
 
 class Menu(models.Model):
+    class MenuType(models.TextChoices):
+        RecommendProduct = 'Recommend_product', _('推薦商品')
+        PopularSelect = 'Popular_select', _('人氣精選')
+        Meal = 'Meal', _('套餐')
+        Rice = 'Rice', _('飯類')
+        Noodles = 'Noodles', _('麵類')
+        SideDish = 'Side_dishes', _('小菜類')
+
     store = models.ForeignKey('Store', related_name='menu_items', on_delete=models.CASCADE)
     name = models.CharField(max_length=20)
+    type = models.CharField(max_length=50, choices=MenuType.choices, default=MenuType.RecommendProduct)
     price = models.IntegerField()
+    description = models.TextField(blank=True, default="")
+    picture = models.ImageField(upload_to='menus', default="")
 
     def __str__(self):
         return self.name
@@ -45,7 +57,7 @@ class Comment(models.Model):
 
     store = models.ForeignKey('Store', related_name='comment_items', on_delete=models.CASCADE)
     score = models.IntegerField(default=CommentScore.three, choices=CommentScore.choices)
-    notes = models.TextField(blank=True, default="")
+    description = models.TextField(blank=True, default="")
     create_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):

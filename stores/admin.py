@@ -14,7 +14,7 @@ class CommentInline(admin.StackedInline):
     extra = 1
 
 class StoreAdmin(admin.ModelAdmin):
-    list_display = ("name", "notes", "get_score")
+    list_display = ("name", "get_score")
     inlines = (MenuInline, CommentInline)
 
     def get_score(self, obj):
@@ -22,11 +22,14 @@ class StoreAdmin(admin.ModelAdmin):
     get_score.short_description = "avg_score"
     # get_score.admin_order_field = "score"
 
-# class MenuAdmin(admin.ModelAdmin):
-#     list_display = ("name", "price",)
+class MenuAdmin(admin.ModelAdmin):
+    list_display = ("store", "name", "price",)
+
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ("store", )
 
 admin.site.register(Store, StoreAdmin)
 # admin.site.register(Store)
-admin.site.register(Menu)
-admin.site.register(Comment)
+admin.site.register(Menu, MenuAdmin)
+admin.site.register(Comment, CommentAdmin)
 
