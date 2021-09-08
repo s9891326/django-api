@@ -59,27 +59,28 @@
 
 ## 欄位定義
 ### 店家
-- 名稱
-- 店家類型(日式、西式餐廳)
-- 聯絡電話
-- 簡介
-- 地點(=> google map)
-- 評論
-- 菜單
-- 創建時間(=> 最新店家)
-- 創建者
+- 名稱(name)
+- 店家圖片(picture)
+- 店家類型(日式、西式餐廳)(type)
+- 聯絡電話(phone_number)
+- 簡介(description)
+- 地點(local => google map)
+- 評論(comment_items)
+- 菜單(menu_items)
+- 創建時間(create_at => 最新店家)
+- 創建者(create_by)
 
 ### 評論
-- 評價分數
-- 評價文字
-- 評價者
+- 評價分數(score)
+- 評價內容(description)
+- 評價者(create_by)
 
 ### 菜單
-- 菜單名稱
-- 菜單價格
-- 菜單內容物說明
-- 類型(套餐、主食、小菜...)
-- 菜單圖片
+- 菜單名稱(name)
+- 菜單價格(price)
+- 菜單內容物說明(description)
+- 類型(套餐、主食、小菜...)(type)
+- 菜單圖片(picture)
 
 ### 使用者
 - 名字

@@ -20,3 +20,8 @@ def add_after_delete(model, update_data: List[Dict[str, str]], create_by: User =
             model.create(**data, create_by=create_by)
         else:
             model.create(**data)
+
+
+def get_current_user(req):
+    username = req.context["request"].user
+    return User.objects.filter(username=username).first()
