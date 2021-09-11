@@ -41,7 +41,7 @@ class Menu(models.Model):
     type = models.CharField(max_length=50, choices=MenuType.choices, default=MenuType.RecommendProduct)
     price = models.IntegerField()
     description = models.TextField(blank=True, default="")
-    picture = models.ImageField(upload_to='menus', default="")
+    picture = models.ImageField(upload_to='menus', blank=True)
 
     def __str__(self):
         return self.name
