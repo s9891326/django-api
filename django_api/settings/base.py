@@ -178,7 +178,7 @@ SOCIAL_GOOGLE_CLIENT_ID = "122455133186-drprmpo7inpbpdp8j9fdnodn46hqslct.apps.go
 
 # CORS header
 CORS_ORIGIN_WHITELIST = (
-    'http://localhost:63342',  # localhost:63342 != 127.0.0.1:63342
+    'http://localhost:3000',  # localhost:63342 != 127.0.0.1:63342
 )
 
 # Database
