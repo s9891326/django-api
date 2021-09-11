@@ -20,3 +20,7 @@ DATABASES = {
 }
 
 ALLOWED_HOSTS = ['*']
+
+CORS_ALLOWED_ORIGIN = [
+    "http://localhost:3000",
+]
