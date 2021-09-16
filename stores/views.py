@@ -37,17 +37,17 @@ class StoreViewSet(viewsets.ModelViewSet):
 class MenuViewSet(viewsets.ModelViewSet):
     """
     list:
-    返回Store列表訊息
+    返回Menu列表訊息
     retrieve:
-    返回一家Store的詳細訊息
+    返回一項Menu的詳細訊息
     create:
-    新增一家Store
+    新增一項Menu
     update:
-    更新一家Store
+    更新一項Menu
     partial_update:
-    更新一家1231
+    更新一項Menu
     delete:
-    刪除一家Store
+    刪除一項Menu
     """
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
@@ -57,17 +57,17 @@ class MenuViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     """
     list:
-    返回Store列表訊息
+    返回Comment列表訊息
     retrieve:
-    返回一家Store的詳細訊息
+    返回一篇Comment的詳細訊息
     create:
-    新增一家Store
+    新增一篇Comment
     update:
-    更新一家Store
+    更新一篇Comment
     partial_update:
-    更新一家1231
+    更新一篇Comment
     delete:
-    刪除一家Store
+    刪除一篇Comment
     """
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
@@ -84,19 +84,19 @@ class QueryStoreScoreRank(APIView):
     def get(self, request):
         rank = int(request.GET.get(QueryStoreScoreRankSchema.RANK, 5))
 
-        score_ranks = Store.objects.all().annotate(
+        ranks = Store.objects.all().annotate(
             score_rank=Avg("comment_items__score")
         ).order_by("-score_rank")[:rank]
 
         result = []
-        for score in score_ranks:
+        for score in ranks:
             result.append(dict(
                 name=score.name,
                 type=score.type,
                 avg_score=score.score_rank
             ))
 
-        return APIResponse(
+        return jsonify(
             data_status=status.HTTP_200_OK,
             data_msg=StatusMessage.HTTP_200_OK.value,
             results=result,
@@ -114,16 +114,16 @@ class QueryStoreCreateTimeRank(APIView):
     def get(self, request):
         rank = int(request.GET.get(QueryStoreCreateTimeRankSchema.RANK, 5))
 
-        create_at_ranks = Store.objects.all().order_by("-create_at")[:rank]
+        ranks = Store.objects.all().order_by("-create_at")[:rank]
 
         result = []
-        for rank in create_at_ranks:
+        for rank in ranks:
             result.append(dict(
                 name=rank.name,
                 type=rank.type,
                 phone_number=rank.phone_number,
                 local=rank.local,
-                summary=rank.summary,
+                description=rank.description,
                 create_at=get_date_time_str(rank.create_at),
             ))
 

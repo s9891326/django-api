@@ -20,3 +20,9 @@ DATABASES = {
 }
 
 ALLOWED_HOSTS = ['*']
+
+# CORS header
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:3000',  # localhost:63342 != 127.0.0.1:63342
+    'http://localhost:63342',
+)

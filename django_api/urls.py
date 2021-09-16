@@ -28,6 +28,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', include('user.urls')),
     path('stores/', include('stores.urls')),
+    path('mg/', include('mg.urls')),
     path('docs/', include_docs_urls(title="DRF API", description="基於API")),
     # path('api-token-auth/', obtain_jwt_token),
     # path('api-token-refresh/', refresh_jwt_token),  # 能重新獲取新的token

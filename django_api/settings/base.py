@@ -90,6 +90,7 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'stores.apps.StoresConfig',
     'mg.apps.MgConfig',
+    'orders.apps.OrdersConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -175,11 +176,6 @@ SITE_ID = 1
 # SOCIAL_GOOGLE_CLIENT_ID = env("SOCIAL_GOOGLE_CLIENT_ID")
 SOCIAL_GOOGLE_CLIENT_ID = "122455133186-drprmpo7inpbpdp8j9fdnodn46hqslct.apps.googleusercontent.com"
 # SOCIAL_FACEBOOK_CLIENT_ID = env("SOCIAL_GOOGLE_CLIENT_ID")
-
-# CORS header
-CORS_ORIGIN_WHITELIST = (
-    'http://localhost:63342',  # localhost:63342 != 127.0.0.1:63342
-)
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

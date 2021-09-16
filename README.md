@@ -88,16 +88,19 @@
 - 電話
 - 信箱 
  
-### 訂單事件
-- 店家(FK)
 
 ### 訂單
+- 店家(FK)
 - 訂購資訊(FK 使用者)
 - 取餐時間
 - 取餐地點
+- 創建時間
+- 餐點狀態(等待店家回應 -> 店家接受 -> 處理中 -> 配送中 -> 完成)
+
+### 付款
+- 訂單(FK)
 - 付款方式
 - 付款是否成功
-- 餐點狀況(等待店家回應 -> 店家接受 -> 處理中 -> 配送中 -> 完成)
 
 ## 功能
 ### 店家
@@ -116,13 +119,11 @@
 - 註冊
 - 登入
 
-### 訂單事件
-- CRUD
-
 ### 訂單
 - CRUD
 - 金流串接
 - 更新物流狀態
+- 依照當天日期(20210915) + ID(000001) = 流水號(14)
 
 ## 遇到的問題
 1. 安装cryptography报错：Failed building wheel for cryptography
@@ -131,3 +132,5 @@
 2. 理解Django aggregate()、annotate()的運用方式 [Ref](https://docs.djangoproject.com/zh-hans/3.2/topics/db/aggregation/)
 > - 兩者之間的差異: aggregate()是終端子句、annotate()不是終端子句。
 > - annotate()子句的輸出是QuerySet。這個QuerySet可以被其他QuerySet進行操作和修改(filter()、order_by())
+3. 遇到Cors跨域問題，使用以下的套件，並設定對應的白名單來接受特定網域的request
+> - [cors-headers](https://github.com/adamchainz/django-cors-headers)
